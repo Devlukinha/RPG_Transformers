@@ -1,6 +1,48 @@
 #include <stdio.h>
-#include <windows.h>
 #include <string.h>
+#include <windows.h>
+
+// struct para os personagens
+typedef struct personagem{
+    char equipe[50];
+    char nome[50];
+    int vida;
+    int ataque;
+    int defesa;
+} Personagem;
+
+// vetor que ira armazenar os personagens de cada equipe
+Personagem autobots[3];
+Personagem decepticons[3];
+
+void digitar(const char *texto);
+void esperarEnter(void);
+void inicializarPersonagens(void);
+void menu(void);
+void iniciarHistoria(void);
+void iniciarJogo(void);
+Personagem timeAutobots(void);
+Personagem timeDecepticon(void);
+void iniciarCampanha(Personagem personagemSelecionado);
+void fase1(Personagem personagemSelecionado);
+void fase2(Personagem personagemSelecionado);
+void fase3(Personagem personagemSelecionado);
+void fase4(Personagem personagemSelecionado);
+void fase5(Personagem personagemSelecionado);
+void fase6(Personagem personagemSelecionado);
+
+
+
+
+
+int main () {
+
+    inicializarPersonagens();
+    menu();
+
+    return 0;
+}
+
 
 // funcao para capturar o enter
 void esperarEnter(void) {
@@ -18,28 +60,6 @@ void digitar(const char *texto) {
     }
 }
 
-
-// struct para os personagens
-typedef struct personagem{
-    char equipe[50];
-    char nome[50];
-    int vida;
-    int ataque;
-    int defesa;
-    int energia;
-    int velocidade;
-} Personagem;
-
-// vetor que ira armazenar os personagens de cada equipe
-Personagem autobots[4];
-Personagem decepticons[4];
-
-//mapa do jogo
-int mapa[2][3] = {
-    {1,2,3},
-    {4,5,6}
-};
-
 // funcao para inicializar os personagens e colocar no vetor
 void inicializarPersonagens(void) {
     // AUTOBOTS
@@ -50,8 +70,6 @@ void inicializarPersonagens(void) {
     autobots[0].vida = 120;
     autobots[0].ataque = 28;
     autobots[0].defesa = 25;
-    autobots[0].energia = 100;
-    autobots[0].velocidade = 15;
 
     // BUMBLEBEE
     strcpy(autobots[1].equipe, "Autobots");
@@ -59,8 +77,7 @@ void inicializarPersonagens(void) {
     autobots[1].vida = 85;
     autobots[1].ataque = 23;
     autobots[1].defesa = 12;
-    autobots[1].energia = 110;
-    autobots[1].velocidade = 30;
+
 
     // HOUND
     strcpy(autobots[2].equipe, "Autobots");
@@ -68,17 +85,7 @@ void inicializarPersonagens(void) {
     autobots[2].vida = 140;
     autobots[2].ataque = 25;
     autobots[2].defesa = 30;
-    autobots[2].energia = 80;
-    autobots[2].velocidade = 8;
 
-    // DRIFT
-    strcpy(autobots[3].equipe, "Autobots");
-    strcpy(autobots[3].nome, "Drift");
-    autobots[3].vida = 95;
-    autobots[3].ataque = 30;
-    autobots[3].defesa = 15;
-    autobots[3].energia = 100;
-    autobots[3].velocidade = 25;
 
     // DECEPTICONS
 
@@ -88,8 +95,6 @@ void inicializarPersonagens(void) {
     decepticons[0].vida = 130;
     decepticons[0].ataque = 32;
     decepticons[0].defesa = 25;
-    decepticons[0].energia = 100;
-    decepticons[0].velocidade = 12;
 
     // GALVATRON
     strcpy(decepticons[1].equipe, "Decepticons");
@@ -97,8 +102,6 @@ void inicializarPersonagens(void) {
     decepticons[1].vida = 115;
     decepticons[1].ataque = 30;
     decepticons[1].defesa = 20;
-    decepticons[1].energia = 120;
-    decepticons[1].velocidade = 16;
 
     // LOCKDOWN
     strcpy(decepticons[2].equipe, "Decepticons");
@@ -106,315 +109,9 @@ void inicializarPersonagens(void) {
     decepticons[2].vida = 100;
     decepticons[2].ataque = 29;
     decepticons[2].defesa = 18;
-    decepticons[2].energia = 110;
-    decepticons[2].velocidade = 28;
 
-    // STINGER
-    strcpy(decepticons[3].equipe, "Decepticons");
-    strcpy(decepticons[3].nome, "Stinger");
-    decepticons[3].vida = 80;
-    decepticons[3].ataque = 25;
-    decepticons[3].defesa = 12;
-    decepticons[3].energia = 100;
-    decepticons[3].velocidade = 32;
 }
 
-// funcao que recebe o id do decepticon e retorna o struct correspondente
-Personagem selecionarDecepticon(int id) {
-
-    switch (id) {
-
-        case 1:
-            return decepticons[0];
-
-        case 2:
-            return decepticons[1];
-
-        case 3:
-            return decepticons[2];
-
-        case 4:
-            return decepticons[3];
-
-    }
-}
-
-// funcao que recebe o id do autobot e retorna o struct correspondente
-Personagem selecionarAutobot(int id) {
-
-    switch (id) {
-
-        case 1:
-            return autobots[0];
-
-        case 2:
-            return autobots[1];
-
-        case 3:
-            return autobots[2];
-
-        case 4:
-            return autobots[3];
-
-    }
-}
-
-// funcao para jogar com decepticons
-Personagem jogarDecepticons(void) {
-
-    int opcao;
-
-    do {
-        printf("Voce se aliou a Megatron e lutara pela causa Decepticon!\n");
-        printf("Para comecar, escolha com qual personagem voce quer jogar\n");
-        printf("-------------------------------\n");
-        printf("1 - MEGATRON\n");
-        printf("2 - GALVATRON\n");
-        printf("3 - LOCKDOWN\n");
-        printf("4 - STINGER\n");
-        printf("-------------------------------\n");
-        scanf("%d", &opcao);
-
-        if (opcao < 1 || opcao > 4) {
-            printf("Opcao invalida!Tente novamente!\n\n");
-        }
-
-    } while (opcao < 1 || opcao > 4);
-
-    Personagem jogador;
-    jogador = selecionarDecepticon(opcao);
-
-    return jogador;
-}
-
-// funcao para jogar com autobots
-Personagem jogarAutobots(void) {
-
-    int opcao;
-
-    do {
-        printf("Boa escolha! Voce decidiu se juntar a Optimus Prime e sua equipe!\n");
-        printf("Para comecar, escolha com qual personagem voce quer jogar\n");
-        printf("-------------------------------\n");
-        printf("1 - OPTIMUS PRIME\n");
-        printf("2 - BUMBLEBEE\n");
-        printf("3 - HOUND\n");
-        printf("4 - DRIFT\n");
-        printf("-------------------------------\n");
-        scanf("%d", &opcao);
-
-        if (opcao < 1 || opcao > 4) {
-            printf("Opcao invalida!Tente novamente!\n\n");
-        }
-
-    } while (opcao < 1 || opcao > 4);
-
-    Personagem jogador;
-    jogador = selecionarAutobot(opcao);
-
-    return jogador;
-}
-
-
-
-//funcao para exibir o mapa
-void exibirMapa(int faseAtual) {
-
-    for (int i = 0; i < 2; i++) {
-
-        for (int j = 0; j < 3; j++) {
-
-            int fase = mapa[i][j];
-
-            if (fase < faseAtual) {
-                printf("[X] ");
-            }
-            else if (fase == faseAtual) {
-                printf("[J] ");
-            }
-            else {
-                printf("[?] ");
-            }
-        }
-
-        printf("\n");
-    }
-
-    printf("\n[X] Fase concluida");
-    printf("\n[J] Fase atual");
-    printf("\n[?] Fase bloqueada\n");
-}
-
-//funcao para apresentar as fases, muda dependendo da equipe
-void apresentarFase(int fase, Personagem jogador) {
-
-    printf("\n================================\n");
-
-    switch (fase) {
-
-        case 1:
-            printf("FASE 1 - O DESPERTAR\n\n");
-
-            if (strcmp(jogador.equipe, "Autobots") == 0) {
-
-                digitar("Os Autobots precisam se reunir novamente. "
-                        "Optimus Prime recebeu informacoes sobre uma "
-                        "nova ameaca aos Cybertronianos.\n\n");
-
-                printf("OBJETIVO: Reunir informacoes e localizar aliados.\n");
-
-            } else {
-
-                digitar("Megatron reuniu suas forcas e iniciou uma "
-                        "investigacao sobre a movimentacao dos Autobots.\n\n");
-
-                printf("OBJETIVO: Investigar os Autobots.\n");
-            }
-
-            break;
-
-        case 2:
-            printf("FASE 2 - CIDADE EM PERIGO\n\n");
-
-            if (strcmp(jogador.equipe, "Autobots") == 0) {
-
-                digitar("Uma cidade esta sob ataque! Os Autobots precisam "
-                        "impedir a destruicao e proteger os habitantes.\n\n");
-
-                printf("OBJETIVO: Defender a cidade.\n");
-
-            } else {
-
-                digitar("Os Decepticons receberam ordens para atacar "
-                        "uma area estrategica e eliminar a resistencia.\n\n");
-
-                printf("OBJETIVO: Derrotar os defensores da cidade.\n");
-            }
-
-            break;
-
-            // As fases 3, 4, 5 e 6 serao adicionadas aqui.
-
-    }
-
-    printf("\n================================\n");
-}
-
-//funcao para a batalha das fases que tem luta
-int iniciarBatalha(Personagem *jogador, Personagem inimigo) {
-
-    int opcao;
-    int dano;
-    int defendendo;
-
-    printf("\n========== INICIO DA BATALHA ==========\n");
-    printf("%s VS %s\n", jogador->nome, inimigo.nome);
-
-    while (jogador->vida > 0 && inimigo.vida > 0) {
-
-        defendendo = 0;
-
-        printf("\n========== STATUS ==========\n");
-        printf("%s - Vida: %d\n", jogador->nome, jogador->vida);
-        printf("%s - Vida: %d\n", inimigo.nome, inimigo.vida);
-
-        printf("\n1 - ATACAR\n");
-        printf("2 - DEFENDER\n");
-        printf("3 - PULAR TURNO\n");
-        printf("\nEscolha sua acao: ");
-
-        scanf("%d", &opcao);
-
-        if (opcao == 1) {
-
-            dano = jogador->ataque - inimigo.defesa;
-
-            if (dano < 1) {
-                dano = 1;
-            }
-
-            inimigo.vida -= dano;
-
-            printf("\nVoce atacou %s!\n", inimigo.nome);
-            printf("Dano causado: %d\n", dano);
-
-        } else if (opcao == 2) {
-
-            defendendo = 1;
-            printf("\nVoce se preparou para defender!\n");
-
-        } else if (opcao == 3) {
-
-            printf("\nVoce pulou seu turno!\n");
-
-        } else {
-
-            printf("\nOpcao invalida! Tente novamente.\n");
-            continue;
-        }
-
-        // Verifica se o inimigo foi derrotado
-        if (inimigo.vida <= 0) {
-            printf("\n%s foi derrotado!\n", inimigo.nome);
-            return 1;
-        }
-
-        // Vez do inimigo atacar
-        dano = inimigo.ataque - jogador->defesa;
-
-        if (dano < 1) {
-            dano = 1;
-        }
-
-        if (defendendo == 1) {
-            dano = (dano + 1) / 2;
-        }
-
-        jogador->vida -= dano;
-
-        printf("\n%s atacou voce!\n", inimigo.nome);
-        printf("Voce recebeu %d de dano!\n", dano);
-
-        // Verifica se o jogador foi derrotado
-        if (jogador->vida <= 0) {
-            jogador->vida = 0;
-
-            printf("\n================================\n");
-            printf("       VOCE FOI DERROTADO!\n");
-            printf("================================\n");
-
-            return 0;
-        }
-    }
-
-    return 0;
-}
-
-//funcao para iniciar a campanha, mostrar as caracteristicas do personagem escolhido
-void iniciarCampanha(Personagem jogador) {
-
-    int faseAtual = 1;
-
-    while (faseAtual <= 6) {
-
-        exibirMapa(faseAtual);
-
-        printf("\n================================\n");
-        printf("FASE %d\n", faseAtual);
-        printf("================================\n");
-        printf("Personagem escolhido: %s\n", jogador.nome);
-        printf("Equipe: %s\n", jogador.equipe);
-        printf("Vida: %d\n", jogador.vida);
-        printf("Ataque: %d\n", jogador.ataque);
-        printf("Defesa: %d\n", jogador.defesa);
-        printf("Energia: %d\n", jogador.energia);
-        printf("Velocidade: %d\n", jogador.velocidade);
-
-        apresentarFase(faseAtual, jogador);
-
-        faseAtual++;
-    }
-}
 
 // funcao para historia de introducao
 void iniciarHistoria(void) {
@@ -469,13 +166,127 @@ void iniciarHistoria(void) {
     printf("A primeira escolha a se fazer e escolher um lado para lutar");
 }
 
+// funcao para jogar com a equipe autobot e selecionar o personagem
+Personagem timeAutobots(void) {
+
+    int opcao;
+
+    do {
+        printf("Boa escolha! Voce decidiu se juntar a Optimus Prime e sua equipe!\n");
+        printf("Para comecar, escolha com qual personagem voce quer jogar\n");
+        printf("-------------------------------\n");
+        printf("1 - OPTIMUS PRIME\n");
+        printf("2 - BUMBLEBEE\n");
+        printf("3 - HOUND\n");
+        printf("-------------------------------\n");
+        scanf("%d", &opcao);
+
+        if (opcao < 1 || opcao > 3) {
+            printf("Opcao invalida!Tente novamente!\n\n");
+        }
+
+    } while (opcao < 1 || opcao > 3);
+
+    Personagem autobotSelecionado;
+
+    autobotSelecionado = autobots[opcao-1];
+
+    return autobotSelecionado;
+}
+
+// funcao para jogar com a equipe decepticon e selecionar o personagem
+Personagem timeDecepticons(void) {
+
+    int opcao;
+
+    do {
+        printf("Voce se aliou a Megatron e lutara pela causa Decepticon!\n");
+        printf("Para comecar, escolha com qual personagem voce quer jogar\n");
+        printf("-------------------------------\n");
+        printf("1 - MEGATRON\n");
+        printf("2 - GALVATRON\n");
+        printf("3 - LOCKDOWN\n");
+        printf("-------------------------------\n");
+        scanf("%d", &opcao);
+
+        if (opcao < 1 || opcao > 3) {
+            printf("Opcao invalida!Tente novamente!\n\n");
+        }
+
+    } while (opcao < 1 || opcao > 3);
+
+    Personagem decepticonSelecionado;
+
+    decepticonSelecionado = decepticons[opcao-1];
+
+    return decepticonSelecionado;
+}
+
+
+void fase1(Personagem personagemSelecionado) {
+
+    printf("\n=================================================\n");
+    printf("                 FASE 1 - O DESPERTAR                ");
+    printf("\n=================================================\n");
+
+    if (strcmp(personagemSelecionado.equipe, "Autobots") == 0) {
+
+        printf("Bem vindo a cidade de Nova York %s !\n", personagemSelecionado.nome);
+
+    }
+}
+
+// funcao para iniciar a campanha, contem tambem o mapa das fases
+void iniciarCampanha(Personagem personagemSelecionado) {
+
+    int mapa[2][3] = {
+        {1,2,3},
+        {4,5,6}
+    };
+
+    for (int i = 0; i < 2; i++) {
+
+        for (int j = 0; j < 3; j++) {
+
+            int fase = mapa[i][j];
+
+            switch (fase) {
+
+                case 1:
+                  //  fase1(personagemSelecionado);
+                    break;
+
+                case 2:
+                  //  fase2(personagemSelecionado);
+                    break;
+
+                case 3:
+                  //  fase3(personagemSelecionado);
+                    break;
+
+                case 4:
+                   // fase4(personagemSelecionado);
+                    break;
+
+                case 5:
+                   // fase5(personagemSelecionado);
+                    break;
+
+                case 6:
+                   // fase6(personagemSelecionado);
+                    break;
+            }
+        }
+    }
+}
+
 // funcao para iniciar o jogo
 void iniciarJogo(void) {
 
     //iniciarHistoria();
 
     int opcao;
-    Personagem jogador;
+    Personagem roboEscolhido;
 
     do {
         printf("-------------------------------\n");
@@ -490,19 +301,19 @@ void iniciarJogo(void) {
         }
 
         else if (opcao == 1) {
-           jogador = jogarAutobots();
+            roboEscolhido = timeAutobots();
+            iniciarCampanha(roboEscolhido);
         }
 
         else {
-            jogador = jogarDecepticons();
+            roboEscolhido = timeDecepticons();
+            iniciarCampanha(roboEscolhido);
         }
 
     } while (opcao < 1 || opcao > 2);
 
-    iniciarCampanha(jogador);
 
 }
-
 
 // funcao do menu
 void menu(void) {
@@ -519,7 +330,7 @@ void menu(void) {
         printf("4 - Sair\n");
         printf("\nSelecione uma opcao acima: ");
         scanf("%d", &opcao);
-        esperarEnter();
+
 
         switch (opcao) {
 
@@ -527,18 +338,10 @@ void menu(void) {
                 iniciarJogo();
                 break;
 
-                default:
+            default:
                 printf("Opcao invalida! Tente novamente!\n");
         }
 
     } while (opcao < 1 || opcao > 4);
 
-}
-
-//funcao principal
-int main () {
-
-    inicializarPersonagens();
-    menu();
-    return 0;
 }
